@@ -18,20 +18,25 @@ multi-donor allocations and explains its reasoning. A human administrator approv
 | Languages | Bahasa Melayu (default) and English |
 
 ## Run it (about 10 minutes)
-1. Install **Node.js 20 or newer** and **VS Code**.
-2. Create a free project at https://supabase.com.
-3. In Supabase open **SQL Editor > New query**, paste all of `supabase/schema.sql`, click **Run**.
-4. In Supabase open **Authentication > Providers > Email** and turn **Confirm email** OFF while developing
+1. Install **Node.js 20 or newer**, **Git** and **VS Code**.
+2. Get the code:
+   ```
+   git clone https://github.com/wannurhuda/KITA-CODEFEST2026.git
+   cd KITA-CODEFEST2026
+   ```
+3. Create a free project at https://supabase.com.
+4. In Supabase open **SQL Editor > New query**, paste all of `supabase/schema.sql`, click **Run**.
+5. In Supabase open **Authentication > Providers > Email** and turn **Confirm email** OFF while developing
    (or keep it on and confirm through the email link).
-5. In Supabase open **Project Settings > API** and copy the Project URL, `anon` key and `service_role` key.
-6. In this folder: copy `.env.example` to `.env.local` and paste the three values.
-7. Open a terminal in VS Code (Ctrl+`) and run:
+6. In Supabase open **Project Settings > API** and copy the Project URL, `anon` key and `service_role` key.
+7. In this folder: copy `.env.example` to `.env.local` and paste the three values.
+8. Open a terminal in VS Code (Ctrl+`) and run:
    ```
    npm install
    npm run seed      # optional: demo accounts + the 30 school-kit scenario
    npm run dev
    ```
-8. Open http://localhost:3000
+9. Open http://localhost:3000
 
 ### Demo accounts (after `npm run seed`, password `Kita@2026demo`)
 | Role | Email |
@@ -54,6 +59,13 @@ update public.profiles set role = 'admin' where id = (select id from auth.users 
 3. Log in as `aisyah@kita.test`: **Accept delivery**, then **Mark as delivered**.
 4. Log in as `school@kita.test`: **We received the items**.
 5. Open **Impact**: the request now counts as fulfilled. Only confirmed deliveries are counted.
+
+## Keeping your keys safe
+- Real keys live only in `.env.local`, which is listed in `.gitignore` and is never uploaded to GitHub.
+- `.env.example` shows the variable names with empty values. Copy it to `.env.local` and fill it in.
+- The `service_role` key has full database access. Never put it in the code, a screenshot or a public chat.
+  If it is ever exposed, reset it in Supabase under **Project Settings > API**.
+- The `anon` key is designed to be public, but access is still limited by Row Level Security.
 
 ## Tests
 ```
@@ -88,6 +100,13 @@ src/app/              pages
 src/components/       shared UI
 scripts/seed.mjs      demo data
 tests/                engine tests
+```
+
+## Updating this repository
+```
+git add .
+git commit -m "describe your change"
+git push
 ```
 
 ## Disclosure (required by CodeFest rules)
