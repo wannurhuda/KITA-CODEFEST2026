@@ -288,3 +288,29 @@ create policy match_items_insert on public.match_items for insert with check (pu
 
 -- ============ MAKE YOURSELF AN ADMIN (run after you sign up; replace the email) ============
 -- update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');
+
+-- ============ DATA API GRANTS ============
+-- From 30 Oct 2026 Supabase no longer grants API access to new tables automatically,
+-- so every table needs explicit GRANTs. Row Level Security (above) still decides which rows each user can touch.
+-- Safe to run more than once.
+grant usage on schema public to anon, authenticated, service_role;
+
+-- public needs board (RLS only lets anonymous visitors see requests of verified organizations)
+grant select on public.organizations, public.requests to anon;
+
+-- signed-in users: only the operations the app really uses
+grant select, update on public.profiles to authenticated;
+grant select, insert, update on public.organizations to authenticated;
+grant select, insert, update, delete on public.resources to authenticated;
+grant select, insert, update on public.requests to authenticated;
+grant select, insert, update on public.volunteers to authenticated;
+grant select, insert, update, delete on public.matches to authenticated;
+grant select, insert on public.match_items to authenticated;
+
+-- server-side scripts (npm run seed) use the secret / service_role key
+grant all on public.profiles, public.organizations, public.resources, public.requests,
+  public.volunteers, public.matches, public.match_items to service_role;
+
+-- lets an admin clean up a half-created match (used by approveMatch if saving the items fails)
+drop policy if exists matches_delete on public.matches;
+create policy matches_delete on public.matches for delete using (public.is_admin());
